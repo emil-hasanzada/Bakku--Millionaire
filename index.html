@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>Bakkuş Millionaire</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#f5f5f7;
+  --bg-elev:#ffffff;
+  --fill:#f0f0f2;
+  --txt:#1d1d1f;
+  --txt2:#6e6e73;
+  --txt3:#a1a1a6;
+  --line:rgba(0,0,0,.10);
+  --blue:#0071e3;
+  --green:#1d9a55;
+  --red:#d7373f;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#000;
+    --bg-elev:#1c1c1e;
+    --fill:#2c2c2e;
+    --txt:#f5f5f7;
+    --txt2:#98989f;
+    --txt3:#6b6b70;
+    --line:rgba(255,255,255,.12);
+    --blue:#0a84ff;
+    --green:#30d158;
+    --red:#ff453a;
+  }
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font:400 17px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap{max-width:520px;margin:0 auto;padding:22px 18px 44px}
+main{transform:translateZ(0)}
+
+.brand{display:flex;align-items:center;gap:9px;margin:0 0 18px}
+.brand .mark{
+  flex:0 0 auto;width:22px;height:27px;background:var(--txt);
+  -webkit-mask:url(logo.svg) center/contain no-repeat;
+  mask:url(logo.svg) center/contain no-repeat
+}
+.brand .name{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--txt)}
+.brand .ver{font-size:13px;color:var(--txt3);margin-left:auto;font-variant-numeric:tabular-nums}
+h1{
+  font-size:34px;line-height:1.1;letter-spacing:-.02em;font-weight:700;
+  margin:0 0 8px
+}
+.lede{font-size:15px;color:var(--txt2);margin:0 0 26px;letter-spacing:-.01em}
+
+.group{
+  background:var(--bg-elev);border-radius:var(--radius);overflow:hidden;
+  margin-bottom:22px
+}
+.group-label{
+  font-size:13px;color:var(--txt2);padding:0 4px;margin:0 0 8px;font-weight:500
+}
+.row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;min-height:54px;position:relative
+}
+.row + .row::before{
+  content:"";position:absolute;top:0;left:16px;right:0;height:1px;
+  background:var(--line);transform:scaleY(.5)
+}
+.row label{font-size:17px;flex:1;letter-spacing:-.01em}
+.field{
+  font-size:17px;font-weight:400;color:var(--txt);background:transparent;border:0;
+  outline:none;text-align:right;width:8.5ch;min-width:5ch;padding:8px 0;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  border-radius:6px;transition:background .15s
+}
+.field:focus{background:var(--fill)}
+.field::placeholder{color:var(--txt3)}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.cta{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;min-height:52px;border:0;border-radius:12px;cursor:pointer;
+  background:var(--blue);color:#fff;font:600 17px/1 -apple-system,sans-serif;
+  letter-spacing:-.01em;transition:transform .12s ease,opacity .12s;
+  user-select:none
+}
+.cta:active{transform:scale(.975);opacity:.85}
+.cta[disabled]{cursor:default;opacity:.75;transform:none}
+.spin{
+  width:18px;height:18px;border-radius:50%;display:none;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  animation:rot .7s linear infinite
+}
+.cta.loading .spin{display:block}
+@keyframes rot{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:1.6s}}
+
+.result{
+  margin-top:34px;opacity:0;transform:translateY(10px);
+  transition:opacity .4s ease,transform .4s cubic-bezier(.32,.72,0,1);
+  pointer-events:none;height:0;overflow:hidden
+}
+.result.show{opacity:1;transform:none;pointer-events:auto;height:auto}
+.figure{text-align:center;padding:6px 0 30px}
+.figure .cap{font-size:13px;color:var(--txt2);margin:0 0 6px}
+.figure .val{
+  font-size:clamp(38px,12vw,58px);font-weight:700;letter-spacing:-.03em;line-height:1.1;
+  font-variant-numeric:tabular-nums
+}
+.figure .val .u{font-size:.42em;font-weight:600;color:var(--txt2);letter-spacing:-.01em;margin-left:.14em}
+.figure .val .u2{font-size:.42em;font-weight:600;color:var(--txt3);letter-spacing:-.01em;margin-left:.1em}
+.figure .val.never{color:var(--red);font-size:clamp(30px,10vw,44px);letter-spacing:-.02em}
+.figure .sub{font-size:14px;color:var(--txt2);margin:12px auto 0;max-width:22ch;letter-spacing:-.01em}
+
+.stat{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 16px;min-height:48px;position:relative}
+.stat + .stat::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:var(--line);transform:scaleY(.5)}
+.stat dt{font-size:15px;color:var(--txt2);margin:0;letter-spacing:-.01em}
+.stat dd{margin:0;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:right;white-space:nowrap}
+.stat dd small{display:block;font-size:12px;font-weight:400;color:var(--txt3);letter-spacing:0}
+
+.meter{height:6px;border-radius:3px;background:var(--fill);overflow:hidden;display:flex;margin:0 16px 14px}
+.meter i{height:100%;width:0;transition:width .5s cubic-bezier(.32,.72,0,1)}
+.meter .out{background:var(--red)}
+.meter .keep{background:var(--green)}
+.under{display:flex;justify-content:space-between;font-size:12px;color:var(--txt3);padding:0 16px 14px;gap:10px}
+
+.note{
+  margin:22px 2px 0;font-size:15px;line-height:1.45;color:var(--txt2);
+  letter-spacing:-.01em;padding-left:12px;border-left:2px solid var(--line)
+}
+.note.bad{border-left-color:var(--red)}
+footer{font-size:12px;color:var(--txt3);text-align:center;margin:36px 0 0;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+<main>
+  <p class="brand">
+    <span class="mark" role="img" aria-label="Bakkuş"></span>
+    <span class="name">Bakkuş Millionaire</span>
+  </p>
+  <h1>Neçə ilə<br>bir milyon</h1>
+  <p class="lede">Maaşını və xərclərini daxil et. Müddəti hesablayaq və maliyyə planın haqqında bir az həqiqəti danışaq.</p>
+
+  <p class="group-label">Aylıq gəlir və xərclər</p>
+  <div class="group">
+    <div class="row">
+      <label for="salary">Maaş</label>
+      <input class="field" id="salary" type="number" inputmode="numeric" placeholder="0" enterkeyhint="next">
+    </div>
+    <div class="row">
+      <label for="expense">Xərclər</label>
+      <input class="field" id="expense" type="number" inputmode="numeric" placeholder="0" enterkeyhint="go">
+    </div>
+  </div>
+
+  <button class="cta" id="go"><span id="goLabel">Hesabla</span><span class="spin" aria-hidden="true"></span></button>
+
+  <div class="result" id="result">
+    <div class="figure">
+      <p class="cap">Bir milyona qədər</p>
+      <div class="val" id="years">—</div>
+      <p class="sub" id="subtitle"></p>
+    </div>
+
+    <p class="group-label">Gəlirin paylanması</p>
+    <div class="group">
+      <div class="meter"><i class="out" id="mOut"></i><i class="keep" id="mKeep"></i></div>
+      <div class="under"><span id="uOut">—</span><span id="uKeep">—</span></div>
+    </div>
+
+    <p class="group-label">Təfərrüatlar</p>
+    <div class="group">
+      <dl style="margin:0">
+        <div class="stat"><dt>Aylıq yığdığın</dt><dd id="fSave">—</dd></div>
+        <div class="stat"><dt>Yığılacaq müddət</dt><dd id="fMo">—</dd></div>
+        <div class="stat"><dt>Həftəlik yığılma</dt><dd id="fWk">—</dd></div>
+        <div class="stat"><dt>Bir milyon = iPhone</dt><dd id="fIph">—</dd></div>
+        <div class="stat"><dt>Gəlirindən yığdığın</dt><dd id="fPct">—</dd></div>
+      </dl>
+    </div>
+
+    <p class="note" id="verdict"></p>
+  </div>
+</main>
+<footer>Hesablama əyləncəli xarakterlidir<br>və maliyyə məsləhəti deyil.</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const sal = $('salary'), exp = $('expense'), res = $('result');
+const go = $('go'), goLabel = $('goLabel');
+const TARGET = 1000000;
+const PHONE = 1300;
+
+const clean = el => {
+  const v = parseFloat(String(el.value).replace(/[\s ]/g, ''));
+  return Number.isFinite(v) && v > 0 ? v : 0;
+};
+const fmt = n => new Intl.NumberFormat('az-AZ', { maximumFractionDigits: 0 }).format(Math.round(n));
+const money = n => fmt(n) + ' ₼';
+
+let busy = false;
+
+function updateMeter() {
+  const s = clean(sal), e = clean(exp);
+  const keep = Math.max(0, s - e);
+  const pct = s > 0 ? Math.min(100, keep / s * 100) : 0;
+  $('mOut').style.width = (100 - pct) + '%';
+  $('mKeep').style.width = pct + '%';
+  $('uOut').textContent = s ? `Xərclər — ${fmt(100 - pct)}%` : 'Xərclər — —';
+  $('uKeep').textContent = keep ? `Yığılma — ${fmt(pct)}%` : 'Yığılma — 0%';
+}
+
+function verdict(keep, months, s) {
+  if (!s && !clean(exp)) return ['Ən azı bir rəqəm daxil et — hesablayaq.', false];
+  const y = months / 12;
+  if (keep <= 0) return ['Xərclər bütün gəliri udur. Bu ssenaridə milyon gəlmir — və bunun səbəbi riyaziyyat deyil, qəhvə və çatdırma xidmətidir.', true];
+  if (y < 1)  return ['Rəsmi milyoner. İndi əsas sual budur: bu pula nə edəcəksən? Memecoin al, deyilmi?'];
+  if (y < 3)  return ['Sürətli temp. Bu müddətdə bağ evi ala bilərsən — və dərhal qonşularını sevməməyə başlayarsan.'];
+  if (y < 6)  return ['İşləyən variant. O vaxta qərar verib işdən çıxa bilərsən — yarım il heç yerə getmədən.'];
+  if (y < 12) return ['Normal müddət. Bu temp ilə sinif yoldaşların arasında ən varlı adam olarsan.'];
+  if (y < 25) return ['Uzundur. Təxminən ipotekaya oxşayır — sadəcə əks istiqamətdə.'];
+  return ['O qədər uzundur ki, sadəcə növbəti nəsliyə ötürüb vermək asandır. Yığım planının ümumiyyətlə mövcud olduğunu yoxla.'];
+}
+
+function render() {
+  const s = clean(sal), e = clean(exp), keep = s - e;
+  const months = keep > 0 ? TARGET / keep : Infinity;
+  const el = $('years');
+  let yr = '—';
+
+  if (keep <= 0) {
+    el.className = 'val never';
+    el.textContent = 'Heç vaxt';
+    $('subtitle').textContent = 'Xərclər gəliri üstələyir — aylıq yığdığın 0 ₼';
+  } else {
+    let y = Math.floor(months / 12);
+    let m = Math.round(months - y * 12);
+    if (m >= 12) { y++; m = 0; }
+    const years = y ? `${fmt(y)}<span class="u">il</span>` : '';
+    const rem   = m ? `${fmt(m)}<span class="u2">ay</span>` : '';
+    yr = [y ? fmt(y) + ' il' : '', m ? fmt(m) + ' ay' : ''].filter(Boolean).join(' ') || '1 aydan az';
+    el.className = 'val';
+    el.innerHTML = years + (years && rem ? ' ' : '') + rem;
+    $('subtitle').textContent = `Cəmi ${fmt(months)} ay · hər ay ${money(keep)} yığmalısan`;
+  }
+
+  $('fSave').innerHTML = keep > 0 ? money(keep) : '0 ₼';
+  $('fMo').innerHTML   = keep > 0 ? `${fmt(months)} ay<small>${keep > 0 ? yr : '—'}</small>` : '∞';
+  $('fWk').innerHTML   = keep > 0 ? money(keep / 4.33) : '0 ₼';
+  $('fIph').innerHTML  = `${fmt(TARGET / PHONE)} ədəd<small>iPhone ${fmt(PHONE)} ₼</small>`;
+  $('fPct').innerHTML  = s > 0 ? `${fmt(Math.max(0, keep / s * 100))}%` : '—';
+
+  const [txt, bad] = verdict(keep, months, s);
+  const v = $('verdict');
+  v.textContent = txt;
+  v.classList.toggle('bad', !!bad);
+
+  res.classList.add('show');
+}
+
+function calc() {
+  if (busy) return;
+  if (!clean(sal) && !clean(exp)) { res.classList.remove('show'); return; }
+
+  busy = true;
+  go.classList.add('loading');
+  go.disabled = true;
+  goLabel.textContent = 'Hesablanır…';
+  updateMeter();
+
+  setTimeout(() => {
+    render();
+    busy = false;
+    go.classList.remove('loading');
+    go.disabled = false;
+    goLabel.textContent = 'Hesabla';
+  }, 900);
+}
+
+go.addEventListener('click', calc);
+sal.addEventListener('keydown', e => { if (e.key === 'Enter') exp.focus(); });
+exp.addEventListener('keydown', e => { if (e.key === 'Enter') calc(); });
+[sal, exp].forEach(el => el.addEventListener('input', updateMeter));
+
+updateMeter();
+</script>
+</body>
+</html>
